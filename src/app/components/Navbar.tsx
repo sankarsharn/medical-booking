@@ -14,9 +14,22 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import Link from 'next/link';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// Define page links with URLs
+const pages = [
+  { name: 'Services', href: '/services' },
+  { name: 'Pricing', href: '/pricing' },
+  { name: 'Blog', href: '/blog' }
+];
+
+// Define settings with URLs
+const settings = [
+  { name: 'Profile', href: '/profile' },
+  { name: 'Account', href: '/account' },
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Logout', href: '/logout' }
+];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -64,7 +77,8 @@ function ResponsiveAppBar() {
         position="static" 
         elevation={0}
         sx={{ 
-          backgroundColor: '#191D32', // Original dark blue shade
+          backgroundColor: 'rgba(25, 29, 50, 0.85)', // Semi-transparent dark blue
+          backdropFilter: 'blur(8px)', // Add blur effect for better readability
           borderRadius: '12px',
           margin: { xs: '0 4px', md: '0 16px' },
           width: 'auto',
@@ -76,24 +90,24 @@ function ResponsiveAppBar() {
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ minHeight: { xs: '56px', md: '64px' } }}>
-            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              LOGO
-            </Typography>
+            <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+              <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="span"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                }}
+              >
+                LOGO
+              </Typography>
+            </Link>
 
             {/* Mobile menu icon */}
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -124,33 +138,35 @@ function ResponsiveAppBar() {
                 sx={{ display: { xs: 'block', md: 'none' } }}
               >
                 {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                    <Link href={page.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                    </Link>
                   </MenuItem>
                 ))}
               </Menu>
             </Box>
             
             {/* Mobile logo */}
-            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
-              sx={{
-                mr: 2,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              LOGO
-            </Typography>
+            <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+              <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+              <Typography
+                variant="h5"
+                noWrap
+                component="span"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'flex', md: 'none' },
+                  flexGrow: 1,
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                }}
+              >
+                LOGO
+              </Typography>
+            </Link>
             
             {/* This empty box pushes the navigation items to the right */}
             <Box sx={{ flexGrow: 1 }} />
@@ -158,24 +174,25 @@ function ResponsiveAppBar() {
             {/* Desktop navigation items moved to right before settings */}
             <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
               {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ 
-                    mx: 1,
-                    my: 1, 
-                    color: 'white', 
-                    borderRadius: '8px',
-                    padding: '6px 16px',
-                    transition: 'all 0.2s',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.15)', 
-                      transform: 'translateY(-2px)',
-                    }
-                  }}
-                >
-                  {page}
-                </Button>
+                <Link key={page.name} href={page.href} passHref style={{ textDecoration: 'none' }}>
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ 
+                      mx: 1,
+                      my: 1, 
+                      color: 'white', 
+                      borderRadius: '8px',
+                      padding: '6px 16px',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.15)', 
+                        transform: 'translateY(-2px)',
+                      }
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                </Link>
               ))}
             </Box>
             
@@ -211,8 +228,10 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                    <Link href={setting.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Typography sx={{ textAlign: 'center' }}>{setting.name}</Typography>
+                    </Link>
                   </MenuItem>
                 ))}
               </Menu>
