@@ -1,6 +1,8 @@
-"use client"
+"use client";
 import React, { useState, FormEvent } from 'react';
-import { FaShieldAlt, FaEnvelope, FaLock, FaArrowRight, FaGoogle, FaFacebookF, FaApple, FaSyncAlt, FaChartLine } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaArrowRight, FaGoogle, FaFacebookF, FaApple } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface SignInFormData {
   email: string;
@@ -8,14 +10,12 @@ interface SignInFormData {
 }
 
 interface SignInProps {
-  onSignIn?: (data: SignInFormData) => void;
   onSignUp?: () => void;
   onForgotPassword?: () => void;
   onSocialSignIn?: (provider: 'google' | 'facebook' | 'apple') => void;
 }
 
 const SignIn: React.FC<SignInProps> = ({
-  onSignIn,
   onSignUp,
   onForgotPassword,
   onSocialSignIn
@@ -27,6 +27,7 @@ const SignIn: React.FC<SignInProps> = ({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,15 +49,26 @@ const SignIn: React.FC<SignInProps> = ({
     try {
       setIsLoading(true);
       
-      if (onSignIn) {
-        onSignIn(formData);
-      } else {
-        console.log('Sign-in attempted with:', formData);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Sign in failed');
       }
-    } catch (err) {
-      setError('An error occurred during sign in. Please try again.');
-      console.error(err);
+  
+      // No need to handle token here - it's in HTTP-only cookie
+      router.push('/');
+  
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during sign in. Please try again.');
+      console.error('SignIn Error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -67,6 +79,7 @@ const SignIn: React.FC<SignInProps> = ({
       onSocialSignIn(provider);
     } else {
       console.log(`Sign in with ${provider} attempted`);
+      // Implement actual social sign-in logic here
     }
   };
 
@@ -74,9 +87,6 @@ const SignIn: React.FC<SignInProps> = ({
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {/* Mobile header */}
-          
-          
           {/* Form section */}
           <div className="p-6 md:p-8">
             <div className="mb-6">
@@ -199,6 +209,8 @@ const SignIn: React.FC<SignInProps> = ({
                   <FaApple className="text-sm" />
                 </button>
               </div>
+              
+             
             </form>
           </div>
         </div>

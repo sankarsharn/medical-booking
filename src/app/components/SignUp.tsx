@@ -1,6 +1,8 @@
 "use client"
 import React, { useState, FormEvent } from 'react';
 import { FaShieldAlt, FaEnvelope, FaLock, FaUser, FaArrowRight, FaGoogle, FaFacebookF, FaApple } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface SignUpFormData {
   username: string;
@@ -9,13 +11,12 @@ interface SignUpFormData {
 }
 
 interface SignUpProps {
-  onSignUp?: (data: SignUpFormData) => void;
   onSignIn?: () => void;
   onSocialSignUp?: (provider: 'google' | 'facebook' | 'apple') => void;
 }
 
 const SignUp: React.FC<SignUpProps> = ({
-  onSignUp,
+  onSignIn,
   onSocialSignUp
 }) => {
   const [formData, setFormData] = useState<SignUpFormData>({
@@ -26,6 +27,8 @@ const SignUp: React.FC<SignUpProps> = ({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,23 +41,44 @@ const SignUp: React.FC<SignUpProps> = ({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     
     if (!formData.username || !formData.email || !formData.password) {
       setError('Please fill in all required fields');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters');
       return;
     }
     
     try {
       setIsLoading(true);
       
-      if (onSignUp) {
-        onSignUp(formData);
-      } else {
-        console.log('Sign-up attempted with:', formData);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Signup failed');
       }
-    } catch (err) {
-      setError('An error occurred during sign up. Please try again.');
+
+      setSuccess('Signup successful! Redirecting...');
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during sign up. Please try again.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -73,8 +97,6 @@ const SignUp: React.FC<SignUpProps> = ({
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          
-          
           {/* Form section */}
           <div className="p-6 md:p-8">
             <div className="mb-6">
@@ -86,6 +108,12 @@ const SignUp: React.FC<SignUpProps> = ({
               {error && (
                 <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
                   {error}
+                </div>
+              )}
+              
+              {success && (
+                <div className="mb-4 p-3 bg-green-50 border-l-4 border-green-500 text-green-700 rounded text-sm">
+                  {success}
                 </div>
               )}
               
@@ -142,6 +170,7 @@ const SignUp: React.FC<SignUpProps> = ({
                     className="w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition" 
                     placeholder="••••••••"
                     required
+                    minLength={8}
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Use 8 or more characters with a mix of letters, numbers & symbols</p>
@@ -206,6 +235,13 @@ const SignUp: React.FC<SignUpProps> = ({
                 >
                   <FaApple className="text-sm" />
                 </button>
+              </div>
+              
+              <div className="mt-6 text-center text-xs text-gray-500">
+                Already have an account?{' '}
+                <Link href="/auth/login" className="text-blue-600 font-medium hover:text-blue-800 hover:underline transition">
+                  Sign in
+                </Link>
               </div>
             </form>
           </div>
