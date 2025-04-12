@@ -49,7 +49,8 @@ export async function POST(req: NextRequest) {
         user: { 
           id: user._id, 
           email: user.email, 
-          username: user.username 
+          username: user.username ,
+          isAdmin: user.isAdmin,
         } 
       },
       { status: 200 }

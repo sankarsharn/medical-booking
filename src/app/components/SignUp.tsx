@@ -74,7 +74,7 @@ const SignUp: React.FC<SignUpProps> = ({
       
       // Redirect to login after 2 seconds
       setTimeout(() => {
-        router.push('/');
+        router.push('/authentication');
       }, 2000);
 
     } catch (err: any) {

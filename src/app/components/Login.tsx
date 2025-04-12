@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, FormEvent } from 'react';
+import { useAuthStore } from '@/store/authStore';
 import { FaEnvelope, FaLock, FaArrowRight, FaGoogle, FaFacebookF, FaApple } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -28,6 +29,7 @@ const SignIn: React.FC<SignInProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const login = useAuthStore((state) => state.login);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -58,6 +60,7 @@ const SignIn: React.FC<SignInProps> = ({
       });
   
       const data = await response.json();
+      login(data.user);
   
       if (!response.ok) {
         throw new Error(data.message || 'Sign in failed');
