@@ -15,16 +15,15 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/authStore'; // Assuming you have Zustand auth store
 
-// Define page links with URLs
 const pages = [
   { name: 'Services', href: '/services' },
   { name: 'Pricing', href: '/pricing' },
   { name: 'Blog', href: '/blog' }
 ];
 
-// Define settings with URLs
-const settings = [
+const loggedInSettings = [
   { name: 'Profile', href: '/profile' },
   { name: 'Account', href: '/account' },
   { name: 'Dashboard', href: '/dashboard' },
@@ -35,6 +34,11 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [isScrolled, setIsScrolled] = React.useState(false);
+
+  // Get auth state from Zustand store
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -51,16 +55,17 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  // Add scroll event listener to enhance floating effect
+  const handleLogout = () => {
+    logout();
+    handleCloseUserMenu();
+    // Optionally redirect to home page
+    // router.push('/');
+  };
+
   React.useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -77,15 +82,15 @@ function ResponsiveAppBar() {
         position="static" 
         elevation={0}
         sx={{ 
-          backgroundColor: 'rgba(25, 29, 50, 0.85)', // Semi-transparent dark blue
-          backdropFilter: 'blur(8px)', // Add blur effect for better readability
+          backgroundColor: 'rgba(25, 29, 50, 0.85)',
+          backdropFilter: 'blur(8px)',
           borderRadius: '12px',
           margin: { xs: '0 4px', md: '0 16px' },
           width: 'auto',
           transition: 'all 0.3s ease',
           boxShadow: isScrolled 
             ? '0 8px 32px rgba(0, 0, 0, 0.12)' 
-            : '0 4px 12px rgba(0, 0, 0, 0.08)', // Subtle shadow for floating effect
+            : '0 4px 12px rgba(0, 0, 0, 0.08)',
         }}
       >
         <Container maxWidth="xl">
@@ -109,7 +114,6 @@ function ResponsiveAppBar() {
               </Typography>
             </Link>
 
-            {/* Mobile menu icon */}
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
@@ -147,7 +151,6 @@ function ResponsiveAppBar() {
               </Menu>
             </Box>
             
-            {/* Mobile logo */}
             <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
               <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
               <Typography
@@ -168,10 +171,8 @@ function ResponsiveAppBar() {
               </Typography>
             </Link>
             
-            {/* This empty box pushes the navigation items to the right */}
             <Box sx={{ flexGrow: 1 }} />
             
-            {/* Desktop navigation items moved to right before settings */}
             <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
               {pages.map((page) => (
                 <Link key={page.name} href={page.href} passHref style={{ textDecoration: 'none' }}>
@@ -196,50 +197,78 @@ function ResponsiveAppBar() {
               ))}
             </Box>
             
-            {/* User settings menu */}
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ 
-                  p: 0,
-                  ml: 1,
-                  border: '2px solid rgba(255, 255, 255, 0.2)',
-                  transition: 'all 0.2s',
-                  '&:hover': {
-                    border: '2px solid rgba(255, 255, 255, 0.5)',
-                  }
-                }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                    <Link href={setting.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <Typography sx={{ textAlign: 'center' }}>{setting.name}</Typography>
-                    </Link>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            {/* Conditional rendering based on auth status */}
+            {isAuthenticated ? (
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ 
+                    p: 0,
+                    ml: 1,
+                    border: '2px solid rgba(255, 255, 255, 0.2)',
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      border: '2px solid rgba(255, 255, 255, 0.5)',
+                    }
+                  }}>
+                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {loggedInSettings.map((setting) => (
+                    <MenuItem 
+                      key={setting.name} 
+                      onClick={setting.name === 'Logout' ? handleLogout : handleCloseUserMenu}
+                    >
+                      <Link href={setting.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Typography sx={{ textAlign: 'center' }}>{setting.name}</Typography>
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            ) : (
+              <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+                <Link href="/authentication" passHref>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      ml: 2,
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                      borderRadius: '8px',
+                      padding: '6px 16px',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        backgroundColor: 'primary.dark',
+                        transform: 'translateY(-2px)',
+                      }
+                    }}
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </AppBar>
     </Box>
   );
 }
+
 export default ResponsiveAppBar;
