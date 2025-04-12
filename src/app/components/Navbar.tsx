@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore'; // Assuming you have Zustand auth store
+import {useRouter} from 'next/navigation';
 
 const pages = [
   { name: 'Services', href: '/services' },
@@ -39,6 +40,7 @@ function ResponsiveAppBar() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  const router = useRouter();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -59,7 +61,7 @@ function ResponsiveAppBar() {
     logout();
     handleCloseUserMenu();
     // Optionally redirect to home page
-    // router.push('/');
+    router.push('/');
   };
 
   React.useEffect(() => {
