@@ -57,7 +57,8 @@ const HealthcarePlatform = () => {
       <Box sx={{
         backgroundColor: colors.primary,
         color: colors.textLight,
-        py: 8,
+        py: 12,
+
         textAlign: 'center'
       }}>
         <Container maxWidth="md">
