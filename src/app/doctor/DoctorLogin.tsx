@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDoctorAuthStore } from "@/store/doctorStore";
 
 interface LoginProps {
   onSignUp: () => void;
@@ -17,6 +18,7 @@ const DoctorLogin: React.FC<LoginProps> = ({ onSignUp }) => {
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+    const login = useDoctorAuthStore((state) => state.login);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,7 +49,7 @@ const DoctorLogin: React.FC<LoginProps> = ({ onSignUp }) => {
       if (!response.ok) {
         throw new Error(data.message || "Sign in failed");
       }
-
+      login(data.user);
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => {
         router.push("/doctor/dashboard");
