@@ -29,6 +29,7 @@ const loggedInSettings = [
   { name: 'Account', href: '/account' },
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Logout', href: '/logout' },
+  { name: 'Doctor', href: '/doctor'}
 ];
 
 function ResponsiveAppBar() {
