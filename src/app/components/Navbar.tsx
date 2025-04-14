@@ -15,20 +15,20 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
-import { useAuthStore } from '@/store/authStore'; // Assuming you have Zustand auth store
-import {useRouter} from 'next/navigation';
+import { useAuthStore } from '@/store/authStore'; // Zustand store
+import { useRouter } from 'next/navigation';
 
 const pages = [
   { name: 'Services', href: '/services' },
   { name: 'Pricing', href: '/pricing' },
-  { name: 'Blog', href: '/blog' }
+  { name: 'Blog', href: 'https://blog.practo.com/', external: true },
 ];
 
 const loggedInSettings = [
   { name: 'Profile', href: '/profile' },
   { name: 'Account', href: '/account' },
   { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Logout', href: '/logout' }
+  { name: 'Logout', href: '/logout' },
 ];
 
 function ResponsiveAppBar() {
@@ -36,9 +36,7 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [isScrolled, setIsScrolled] = React.useState(false);
 
-  // Get auth state from Zustand store
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
 
@@ -48,19 +46,15 @@ function ResponsiveAppBar() {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
   const handleLogout = () => {
     logout();
     handleCloseUserMenu();
-    // Optionally redirect to home page
     router.push('/');
   };
 
@@ -73,25 +67,19 @@ function ResponsiveAppBar() {
   }, []);
 
   return (
-    <Box sx={{ 
-      position: 'fixed',
-      width: '100%',
-      top: 0,
-      zIndex: 1100,
-      padding: { xs: '8px', md: '16px' },
-    }}>
-      <AppBar 
-        position="static" 
+    <Box sx={{ position: 'fixed', width: '100%', top: 0, zIndex: 1100, padding: { xs: '8px', md: '16px' } }}>
+      <AppBar
+        position="static"
         elevation={0}
-        sx={{ 
+        sx={{
           backgroundColor: 'rgba(25, 29, 50, 0.85)',
           backdropFilter: 'blur(8px)',
           borderRadius: '12px',
           margin: { xs: '0 4px', md: '0 16px' },
           width: 'auto',
           transition: 'all 0.3s ease',
-          boxShadow: isScrolled 
-            ? '0 8px 32px rgba(0, 0, 0, 0.12)' 
+          boxShadow: isScrolled
+            ? '0 8px 32px rgba(0, 0, 0, 0.12)'
             : '0 4px 12px rgba(0, 0, 0, 0.08)',
         }}
       >
@@ -119,9 +107,6 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
                 onClick={handleOpenNavMenu}
                 color="inherit"
               >
@@ -130,29 +115,29 @@ function ResponsiveAppBar() {
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
                 sx={{ display: { xs: 'block', md: 'none' } }}
               >
                 {pages.map((page) => (
                   <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                    <Link href={page.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
-                    </Link>
+                    {page.external ? (
+                      <a href={page.href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                      </a>
+                    ) : (
+                      <Link href={page.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                      </Link>
+                    )}
                   </MenuItem>
                 ))}
               </Menu>
             </Box>
-            
+
             <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
               <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
               <Typography
@@ -172,68 +157,91 @@ function ResponsiveAppBar() {
                 LOGO
               </Typography>
             </Link>
-            
+
             <Box sx={{ flexGrow: 1 }} />
-            
+
             <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
-              {pages.map((page) => (
-                <Link key={page.name} href={page.href} passHref style={{ textDecoration: 'none' }}>
-                  <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ 
-                      mx: 1,
-                      my: 1, 
-                      color: 'white', 
-                      borderRadius: '8px',
-                      padding: '6px 16px',
-                      transition: 'all 0.2s',
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.15)', 
-                        transform: 'translateY(-2px)',
-                      }
-                    }}
+              {pages.map((page) =>
+                page.external ? (
+                  <a
+                    key={page.name}
+                    href={page.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'none' }}
                   >
-                    {page.name}
-                  </Button>
-                </Link>
-              ))}
+                    <Button
+                      sx={{
+                        mx: 1,
+                        my: 1,
+                        color: 'white',
+                        borderRadius: '8px',
+                        padding: '6px 16px',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateY(-2px)',
+                        },
+                      }}
+                    >
+                      {page.name}
+                    </Button>
+                  </a>
+                ) : (
+                  <Link key={page.name} href={page.href} passHref style={{ textDecoration: 'none' }}>
+                    <Button
+                      onClick={handleCloseNavMenu}
+                      sx={{
+                        mx: 1,
+                        my: 1,
+                        color: 'white',
+                        borderRadius: '8px',
+                        padding: '6px 16px',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateY(-2px)',
+                        },
+                      }}
+                    >
+                      {page.name}
+                    </Button>
+                  </Link>
+                )
+              )}
             </Box>
-            
-            {/* Conditional rendering based on auth status */}
+
             {isAuthenticated ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ 
-                    p: 0,
-                    ml: 1,
-                    border: '2px solid rgba(255, 255, 255, 0.2)',
-                    transition: 'all 0.2s',
-                    '&:hover': {
-                      border: '2px solid rgba(255, 255, 255, 0.5)',
-                    }
-                  }}>
-                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    sx={{
+                      p: 0,
+                      ml: 1,
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        border: '2px solid rgba(255, 255, 255, 0.5)',
+                      },
+                    }}
+                  >
+                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                   </IconButton>
                 </Tooltip>
                 <Menu
                   sx={{ mt: '45px' }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                   keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
                   {loggedInSettings.map((setting) => (
-                    <MenuItem 
-                      key={setting.name} 
+                    <MenuItem
+                      key={setting.name}
                       onClick={setting.name === 'Logout' ? handleLogout : handleCloseUserMenu}
                     >
                       <Link href={setting.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -258,7 +266,7 @@ function ResponsiveAppBar() {
                       '&:hover': {
                         backgroundColor: 'primary.dark',
                         transform: 'translateY(-2px)',
-                      }
+                      },
                     }}
                   >
                     Login
