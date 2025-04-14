@@ -1,6 +1,6 @@
-// app/doctor/components/DoctorSignUp.tsx
 "use client";
 import React, { useState } from "react";
+import {useRouter} from "next/navigation";
 
 interface SignUpProps {
   onSignIn: () => void;
@@ -9,26 +9,54 @@ interface SignUpProps {
 const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
   const [formData, setFormData] = useState({
     name: "",
-    specialty: "",
-    experience: "",
-    city: "",
-    licenseNumber: "",
+    email: "",
     password: "",
+    degree: "",
+    specialization: "",
+    city: "",
+    experience: "",
+    license: "",
   });
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sign up submitted:", formData);
-    // Add your sign up logic here
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/doctor/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          experience: Number(formData.experience), // backend expects number
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Signup failed");
+        return;
+      }
+
+      setSuccess("Account created successfully!");
+      // You can auto-login or redirect here if needed
+      router.push("/doctor");
+    } catch (err) {
+      setError("An unexpected error occurred");
+    }
   };
 
-  // OKLCH color: oklch(0.546 0.245 262.881) converts to a purple color
-  const primaryColor = 'rgb(103, 80, 221)';
+  const primaryColor = "rgb(103, 80, 221)";
 
   return (
     <div className="p-8">
@@ -42,114 +70,34 @@ const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="specialty"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            Specialty
-          </label>
-          <input
-            type="text"
-            id="specialty"
-            name="specialty"
-            value={formData.specialty}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="experience"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            Experience (years)
-          </label>
-          <input
-            type="number"
-            id="experience"
-            name="experience"
-            value={formData.experience}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-            min="0"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="city"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="licenseNumber"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            License Number
-          </label>
-          <input
-            type="text"
-            id="licenseNumber"
-            name="licenseNumber"
-            value={formData.licenseNumber}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-            required
-          />
-        </div>
+        {[
+          { label: "Full Name", name: "name", type: "text" },
+          { label: "Email", name: "email", type: "email" },
+          { label: "Password", name: "password", type: "password" },
+          { label: "Degree", name: "degree", type: "text" },
+          { label: "Specialization", name: "specialization", type: "text" },
+          { label: "City", name: "city", type: "text" },
+          { label: "Experience (years)", name: "experience", type: "number" },
+          { label: "License Number", name: "license", type: "text" },
+        ].map((field) => (
+          <div key={field.name}>
+            <label
+              htmlFor={field.name}
+              className="block text-gray-700 text-sm font-medium mb-2"
+            >
+              {field.label}
+            </label>
+            <input
+              type={field.type}
+              id={field.name}
+              name={field.name}
+              value={(formData as any)[field.name]}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
+              required
+            />
+          </div>
+        ))}
 
         <button
           type="submit"
@@ -158,6 +106,9 @@ const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
         >
           Create Account
         </button>
+
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {success && <p className="text-green-600 text-sm mt-2">{success}</p>}
       </form>
 
       <div className="text-center mt-6">
