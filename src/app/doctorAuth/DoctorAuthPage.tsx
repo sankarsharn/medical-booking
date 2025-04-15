@@ -1,8 +1,8 @@
 // app/doctor/DoctorAuthPage.tsx
 "use client";
 import React, { useState } from "react";
-import DoctorLogin from "@/app/doctor/DoctorLogin";
-import DoctorSignUp from "@/app/doctor/DoctorSignup";
+import DoctorLogin from "@/app/doctorAuth/DoctorLogin";
+import DoctorSignUp from "@/app/doctorAuth/DoctorSignup";
 
 const DoctorAuthPage = () => {
   const [isSignIn, setIsSignIn] = useState(true);

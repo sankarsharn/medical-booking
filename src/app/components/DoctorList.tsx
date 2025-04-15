@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Doctor {
   _id: string;
@@ -15,6 +16,12 @@ interface DoctorListProps {
 }
 
 const DoctorList: React.FC<DoctorListProps> = ({ doctors }) => {
+  const router = useRouter();
+
+  const handleViewProfile = (id: string) => {
+    router.push(`/doctor/${id}`);
+  };
+
   return (
     <div className="mt-8">
       <h2 className="text-3xl font-bold mb-6">Doctors found</h2>
@@ -27,7 +34,7 @@ const DoctorList: React.FC<DoctorListProps> = ({ doctors }) => {
             <p className="text-gray-600">Contact: {doctor.contact}</p>
 
             <button
-              onClick={() => window.location.href = `/doctor/${doctor._id}`}
+              onClick={() => handleViewProfile(doctor._id)}
               className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               View Profile
