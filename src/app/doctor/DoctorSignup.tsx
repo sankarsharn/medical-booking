@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface SignUpProps {
   onSignIn: () => void;
@@ -17,6 +17,7 @@ const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
     experience: "",
     license: "",
   });
+
   const router = useRouter();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -49,10 +50,13 @@ const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
       }
 
       setSuccess("Account created successfully!");
-      // You can auto-login or redirect here if needed
       router.push("/doctor");
-    } catch (err) {
-      setError("An unexpected error occurred");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
     }
   };
 
@@ -91,7 +95,7 @@ const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
               type={field.type}
               id={field.name}
               name={field.name}
-              value={(formData as any)[field.name]}
+              value={(formData as never)[field.name]}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
               required
