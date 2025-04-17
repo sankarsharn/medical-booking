@@ -52,7 +52,7 @@ const DoctorLogin: React.FC<LoginProps> = ({ onSignUp }) => {
       login(data.user);
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => {
-        router.push("/doctor/dashboard");
+        router.push("/doctorDashboard");
       }, 1000);
     } catch (err) {
       if (err instanceof Error) {
