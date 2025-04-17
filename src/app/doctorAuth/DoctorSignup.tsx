@@ -50,7 +50,7 @@ const DoctorSignUp: React.FC<SignUpProps> = ({ onSignIn }) => {
 
       setSuccess("Account created successfully!");
       // You can auto-login or redirect here if needed
-      router.push("/doctor");
+      router.push("/authentication");
     } catch (err) {
       setError("An unexpected error occurred");
     }
