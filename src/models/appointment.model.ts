@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const appointmentRequestSchema = new mongoose.Schema({
+const appointmentSchema = new mongoose.Schema({
     doctor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Doctor',
@@ -15,11 +15,6 @@ const appointmentRequestSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    status: {
-        type: String,
-        enum: ['pending', 'accepted', 'rejected'],
-        default: 'pending',
-    }
-}, {timestamps: true,})
+} , {timestamps: true});
 
-export default mongoose.models.AppointmentRequest || mongoose.model('AppointmentRequest', appointmentRequestSchema);
+export default mongoose.models.Appointment || mongoose.model('Appointment', appointmentSchema);
