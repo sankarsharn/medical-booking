@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     await dbConnect();
-    const { patientId, doctorId, date } = await req.json();
+    const {  doctorId, patientId , date } = await req.json();
 
     if(!doctorId || !patientId || !date) {
         return NextResponse.json({ message: "All fields are required" }, { status: 400 });

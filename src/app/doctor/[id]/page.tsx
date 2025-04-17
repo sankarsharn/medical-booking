@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
 
 interface Doctor {
   _id: string;
@@ -33,6 +34,11 @@ export default function DoctorProfilePage() {
 
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [error, setError] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [message, setMessage] = useState('');
+
+  const { user } = useAuthStore((state) => state);
+  const patientId = user?.id || '';
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -49,13 +55,49 @@ export default function DoctorProfilePage() {
     if (doctorId) fetchDoctor();
   }, [doctorId]);
 
+  const handleBookAppointment = async () => {
+    if (!selectedDate) {
+      setMessage('Please select a date.');
+      return;
+    }
+  
+    setMessage('Booking appointment...');
+  
+    try {
+      const createRes = await fetch('/api/appointment/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doctorId,
+          patientId,
+          date: selectedDate,
+        }),
+      });
+  
+      if (createRes.status === 409) {
+        setMessage('An appointment request for this day already exists on this day.');
+        return;
+      }
+  
+      if (!createRes.ok) {
+        const errorText = await createRes.text();
+        throw new Error(`Server error: ${createRes.status} - ${errorText}`);
+      }
+  
+      setMessage('Appointment request sent successfully!');
+    } catch (err: any) {
+      setMessage(err.message || 'Something went wrong.');
+    }
+  };
+  
+
   if (error) return <p className="text-red-500 text-center mt-8">{error}</p>;
   if (!doctor) return <p className="text-center mt-8">Loading...</p>;
 
   const { chat, call } = getFees(doctor.category);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-24 px-4 sm:px-6 lg:px-8 ">
+    <div className="min-h-screen bg-gray-50 py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden p-8">
         <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">{doctor.name}</h1>
 
@@ -75,11 +117,35 @@ export default function DoctorProfilePage() {
           </ul>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <button className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition">
+        {/* Date Picker */}
+        <div className="mt-8">
+          <label className="block text-gray-700 font-medium mb-2">Choose Appointment Date:</label>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="border px-4 py-2 rounded-md w-full max-w-xs"
+            title="Select a date for the appointment"
+            placeholder="YYYY-MM-DD"
+          />
+        </div>
+
+        {/* Book Button */}
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={handleBookAppointment}
+            className="px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition"
+          >
             Book Appointment
           </button>
         </div>
+
+        {/* Message */}
+        {message && (
+          <div className="mt-4 text-center text-md text-blue-700 font-medium">
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );
