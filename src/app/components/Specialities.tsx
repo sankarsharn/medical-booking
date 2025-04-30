@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -26,8 +27,8 @@ const Specialities = () => {
             {/* Specialty 1 */}
             <div className="flex flex-col items-center">
               <div className="bg-blue-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Gynecology icon"
@@ -42,8 +43,8 @@ const Specialities = () => {
             {/* Specialty 2 */}
             <div className="flex flex-col items-center">
               <div className="bg-red-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Dermatology icon"
@@ -58,8 +59,8 @@ const Specialities = () => {
             {/* Specialty 3 */}
             <div className="flex flex-col items-center">
               <div className="bg-green-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60}
                   height={60} 
                   alt="Child health icon"
@@ -74,8 +75,8 @@ const Specialities = () => {
             {/* Specialty 4 */}
             <div className="flex flex-col items-center">
               <div className="bg-yellow-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="General medicine icon"
@@ -90,8 +91,8 @@ const Specialities = () => {
             {/* Specialty 5 */}
             <div className="flex flex-col items-center">
               <div className="bg-purple-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Mental health icon"
@@ -106,8 +107,8 @@ const Specialities = () => {
             {/* Specialty 6 */}
             <div className="flex flex-col items-center">
               <div className="bg-pink-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Diet icon"
@@ -122,8 +123,8 @@ const Specialities = () => {
             {/* Specialty 7 */}
             <div className="flex flex-col items-center">
               <div className="bg-indigo-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Orthopedic icon"
@@ -138,8 +139,8 @@ const Specialities = () => {
             {/* Specialty 8 */}
             <div className="flex flex-col items-center">
               <div className="bg-teal-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Dental icon"
@@ -154,8 +155,8 @@ const Specialities = () => {
             {/* Specialty 9 */}
             <div className="flex flex-col items-center">
               <div className="bg-orange-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Cardiology icon"
@@ -170,8 +171,8 @@ const Specialities = () => {
             {/* Specialty 10 */}
             <div className="flex flex-col items-center">
               <div className="bg-cyan-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="ENT icon"
@@ -186,8 +187,8 @@ const Specialities = () => {
             {/* Specialty 11 */}
             <div className="flex flex-col items-center">
               <div className="bg-lime-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="Ophthalmology icon"
@@ -202,8 +203,8 @@ const Specialities = () => {
             {/* Specialty 12 */}
             <div className="flex flex-col items-center">
               <div className="bg-rose-100 rounded-full p-4 w-32 h-32 flex items-center justify-center mb-4">
-                <Image 
-                  src="/api/placeholder/60/60" 
+                <img 
+                  src="https://www.svgrepo.com/show/8461/doctor.svg" 
                   width={60} 
                   height={60} 
                   alt="General physician icon"
