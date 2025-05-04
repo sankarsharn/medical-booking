@@ -65,6 +65,7 @@ export async function POST(req: NextRequest) {
     });
 
     return response;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('SignIn Error:', error);
     return NextResponse.json(
