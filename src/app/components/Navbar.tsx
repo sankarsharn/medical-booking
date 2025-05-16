@@ -26,7 +26,8 @@ const pages = [
 
 const loggedInSettings = [
   { name: 'Profile', href: '/profile' },
-  { name: 'Account', href: '/account' },
+  { name: 'Transactions', href: '/transactions' },
+  { name: 'Prescriptions', href: '/prescriptions' },
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Logout', href: '/logout' },
   { name: 'Doctor', href: '/doctorAuth'}
@@ -66,6 +67,15 @@ function ResponsiveAppBar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleMenuItemClick = (setting: { name: string, href: string }) => {
+    if (setting.name === 'Logout') {
+      handleLogout();
+    } else {
+      router.push(setting.href);
+      handleCloseUserMenu();
+    }
+  };
 
   return (
     <Box sx={{ position: 'fixed', width: '100%', top: 0, zIndex: 1100, padding: { xs: '8px', md: '16px' } }}>
@@ -243,11 +253,9 @@ function ResponsiveAppBar() {
                   {loggedInSettings.map((setting) => (
                     <MenuItem
                       key={setting.name}
-                      onClick={setting.name === 'Logout' ? handleLogout : handleCloseUserMenu}
+                      onClick={() => handleMenuItemClick(setting)}
                     >
-                      <Link href={setting.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <Typography sx={{ textAlign: 'center' }}>{setting.name}</Typography>
-                      </Link>
+                      <Typography sx={{ textAlign: 'center' }}>{setting.name}</Typography>
                     </MenuItem>
                   ))}
                 </Menu>
