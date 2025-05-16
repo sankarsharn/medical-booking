@@ -186,7 +186,8 @@ export default function ProfilePage() {
             >
               <Tab label="Profile Information" {...a11yProps(0)} />
               <Tab label="Edit Profile" {...a11yProps(1)} />
-              <Tab label="Settings" {...a11yProps(2)} />
+              <Tab label="My Health" {...a11yProps(2)} />
+              <Tab label="Settings" {...a11yProps(3)} />
             </Tabs>
           </Box>
           
@@ -300,8 +301,22 @@ export default function ProfilePage() {
             </Box>
           </TabPanel>
           
-          {/* Settings Tab */}
+          {/* My Health Tab */}
           <TabPanel value={value} index={2}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+              My Health Information
+            </Typography>
+            <Divider sx={{ mb: .3 }} />
+            
+            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+              <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                Health information will be available here soon.
+              </Typography>
+            </Box>
+          </TabPanel>
+          
+          {/* Settings Tab */}
+          <TabPanel value={value} index={3}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
               Account Settings
             </Typography>
